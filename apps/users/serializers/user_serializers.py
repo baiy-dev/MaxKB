@@ -216,7 +216,7 @@ class RegisterSerializer(ApiMixin, serializers.Serializer):
 
         return True
 
-    @valid_license(model=User, count=2,
+    @valid_license(model=User, count=100,
                    message=_(
                        "The community version supports up to 2 users. If you need more users, please contact us (https://fit2cloud.com/)."))
     @transaction.atomic
@@ -454,7 +454,7 @@ class SendEmailSerializer(ApiMixin, serializers.Serializer):
                 '',
                 html_message=f'{content.replace("${code}", code)}',
                 from_email=system_setting.meta.get('from_email'),
-                recipient_list=[email], fail_silently=False, connection=connection)
+                recipient_list=[email], fail_silently=False, connection=connection)   
         except Exception as e:
             user_cache.delete(code_cache_key_lock)
             raise AppApiException(500, f"{str(e)}" + _("Email sending failed"))
@@ -803,7 +803,7 @@ class UserManageSerializer(serializers.Serializer):
             if self.data.get('password') != self.data.get('re_password'):
                 raise ExceptionCodeConstants.PASSWORD_NOT_EQ_RE_PASSWORD.value.to_app_api_exception()
 
-    @valid_license(model=User, count=2,
+    @valid_license(model=User, count=100,
                    message=_(
                        'The community version supports up to 2 users. If you need more users, please contact us (https://fit2cloud.com/).'))
     @transaction.atomic
